@@ -1,2 +1,0 @@
-('Prediction', 'The Covid vaccine will make you infertile.')
-('Interpretation', 'Aluminium in vaccines can cause Alzheimer’s disease.')
