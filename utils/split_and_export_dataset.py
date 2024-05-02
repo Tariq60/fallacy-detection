@@ -1,9 +1,7 @@
-import pandas as pd
-import sys, math, ast, glob, pickle
-from collections import defaultdict, Counter
-
+import math
+from collections import defaultdict
+import json
 import random
-seed = 42
 
 
 def train_dev_test_split(dict_labels, test_ratio=0.2, min_test_size=10, exclude_labels=set(), rephrase_labels=dict()):
@@ -42,18 +40,23 @@ def train_dev_test_split(dict_labels, test_ratio=0.2, min_test_size=10, exclude_
     return train_dict, dev_dict, test_dict
 
 
-if __name__ == '__main__':
-	dataset = sys.argv[1]
+def export_train_dev_test_datasets(train_list, dev_list, test_list, folder, seed, train_file_name='train', dev_file_name='dev', test_file_name='test'):
+    train, dev, test = train_list, dev_list, test_list
+    print(len(train), len(dev), len(test))
 
-	if dataset == 'climate':
-		pass
-	elif dataset == 'covid':
-		pass
-	elif dataset == 'argotario':
-		pass
-	elif dataset == 'propaganda':
-		pass
-	elif dataset == 'logic':
-		pass
-	else:
-		print('invalid dataset')
+    random.seed(seed)
+    random.shuffle(train)
+    random.shuffle(dev)
+    train_json = [json.dumps({'translation' : {'input': tup[0], 'target': tup[1]}}) for tup in train]
+    dev_json = [json.dumps({'translation' : {'input': tup[0], 'target': tup[1]}}) for tup in dev]
+    test_json = [json.dumps({'translation' : {'input': tup[0], 'target': tup[1]}}) for tup in test]
+
+    with open('{}/{}.json'.format(folder, train_file_name), 'w') as f:
+        for line in train_json:
+            f.write('{}\n'.format(line))
+    with open('{}/{}.json'.format(folder, dev_file_name), 'w') as f:
+        for line in dev_json:
+            f.write('{}\n'.format(line))
+    with open('{}/{}.json'.format(folder, test_file_name), 'w') as f:
+        for line in test_json:
+            f.write('{}\n'.format(line))
