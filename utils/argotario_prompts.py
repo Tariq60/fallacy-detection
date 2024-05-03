@@ -86,7 +86,7 @@ def main(file_dir, export_dir, seed=42):
 
     atrain, adev, atest = train_dev_test_split(
         fal_content, 
-        exclude_labels={'No Fallacy'},
+        # exclude_labels={'No Fallacy'},
         rephrase_labels={'Appeal to Emotion': 'Emotional Language'}
     )
     

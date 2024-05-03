@@ -93,8 +93,7 @@ def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
         min_test_size=1,
         rephrase_labels={
             'NONE': 'No Fallacy', 'False analogy': 'False Analogy', 'Evading Burden of Proof': 'Evading the Burden of Proof',
-            'Post hoc': 'Post Hoc', 'False cause': 'False Cause',
-            'False Authority': 'False Authority'
+            'Post hoc': 'Post Hoc', 'False cause': 'False Cause', 'False Authority': 'False Authority'
         }
     )
     vaccine_train, vaccine_dev, vaccine_test = train_dev_test_split(
@@ -103,8 +102,7 @@ def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
         rephrase_labels={
             'NONE': 'No Fallacy', 'CP': 'Cherry Picking', 'EBP': 'Evading the Burden of Proof',
             'HG': 'Hasty Generalization', 'VAG': 'Vagueness', 'ST': 'Strawman', 'RH': 'Red Herring',
-            'FAUT': 'False Authority', 'PH': 'Post Hoc', 'FC': 'False Cause',
-            'FA': 'False Analogy'
+            'FAUT': 'False Authority', 'PH': 'Post Hoc', 'FC': 'False Cause', 'FA': 'False Analogy'
         }
     )
     covid_train.update(vaccine_train)
@@ -127,7 +125,6 @@ def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
         test_file_name='covid_test'
     )
     
-
 
 if __name__ == '__main__':
     
