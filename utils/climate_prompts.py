@@ -81,9 +81,7 @@ def prompts_climatechange(
 
     return prompt_data
 
-
-def main(file_dir, export_dir, seed=42):
-    
+def read_and_preprocess(file_dir, seed=42):
     # read and preprocess file
     climate = pd.read_excel(file_dir)
     fallacies= ['cherry','vagueness', 'herring', 'evad', 'other', 'authority', 'strawman', 'analogy', 'cause', 'post', 'hasty', 'none', 'invalid']
@@ -105,6 +103,11 @@ def main(file_dir, export_dir, seed=42):
         random.seed(seed)
         random.shuffle(climate_fal_text[k])
     
+    return climate_fal_text
+
+def main(file_dir, export_dir, seed=42):
+
+    climate_fal_text = read_and_preprocess(file_dir, seed=seed)
     climate_train, climate_dev, climate_test = train_dev_test_split(
         climate_fal_text, exclude_labels={'other'}, min_test_size=2,
         rephrase_labels={

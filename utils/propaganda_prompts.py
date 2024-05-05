@@ -92,9 +92,7 @@ def getSentLabelsAndFragments(sent):
         fragments = ast.literal_eval(fragments[:-1])
         return text, labels, fragments
 
-
-def main(processed_files_dir, export_dir, seed=42):
-    
+def read_and_preprocess(processed_files_dir, seed=42):
     # read and preprocess file
     filenames = glob.glob(os.path.join(processed_files_dir, '*'))
     prop_ids = [os.path.basename(filename).replace('article', '').split(".")[0] for filename in filenames]
@@ -111,6 +109,11 @@ def main(processed_files_dir, export_dir, seed=42):
         prop_frag_short_dict[k] = list(dict.fromkeys(prop_frag_short_dict[k]))
         random.seed(seed)
         random.shuffle(prop_frag_short_dict[k])
+    
+    return prop_frag_short_dict
+
+def main(processed_files_dir, export_dir, seed=42):
+    prop_frag_short_dict = read_and_preprocess(processed_files_dir, seed=seed)
 
     ptrain, pdev, ptest = train_dev_test_split(
         prop_frag_short_dict, min_test_size=6, #exclude_labels={'Repetition', 'non-probaganda'},

@@ -60,8 +60,7 @@ def prompts_argo(
 
     return prompt_data
 
-
-def main(file_dir, export_dir, seed=42):
+def read_and_preprocess(file_dir, seed=42):
     # read file
     argo = pd.read_csv(file_dir, sep='\t')
 
@@ -83,7 +82,12 @@ def main(file_dir, export_dir, seed=42):
     for fallacy in fal_content:
         random.seed(seed)
         random.shuffle(fal_content[fallacy])
+    
+    return fal_content
 
+def main(file_dir, export_dir, seed=42):
+
+    fal_content = read_and_preprocess(file_dir, seed=seed)
     atrain, adev, atest = train_dev_test_split(
         fal_content, 
         # exclude_labels={'No Fallacy'},
@@ -112,7 +116,7 @@ def main(file_dir, export_dir, seed=42):
 if __name__ == '__main__':
 
     '''run like: python argotario_prompts.py file_dir export_dir'''
-    # file_dir = '../data/argotario/arguments-en-2018-01-15.tsv'
+    # file_dir = '../data_files/argotario/arguments-en-2018-01-15.tsv'
     # export_dir = '../../2023MBZUAI_Fallacy/data/'
 
     file_dir = sys.argv[1]

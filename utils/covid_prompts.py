@@ -67,27 +67,33 @@ def prompts_covid(
 
     return prompt_data
 
-def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
+def read_and_preprocess(file_dir, seed=42, mode='covid'):
+    assert mode in ['covid', 'vaccine']
+    fal_content = defaultdict(list)
+
+    if mode == 'covid':
+        covid = pd.read_excel(covid_file_dir, header=1)    
+        for claim_type, text, fallacy in zip(covid['Type of Claim'], covid.Claim, covid.Fallacy):
+            fal_content[fallacy.strip()].append((claim_type, text))
+        for k, v in fal_content.items():
+            random.seed(seed)
+            random.shuffle(fal_content[k]) 
     
-    covid = pd.read_excel(covid_file_dir, header=1)
-    covid_fal_content = defaultdict(list)
-    for claim_type, text, fallacy in zip(covid['Type of Claim'], covid.Claim, covid.Fallacy):
-        covid_fal_content[fallacy.strip()].append((claim_type, text))
-    for k, v in covid_fal_content.items():
-        random.seed(seed)
-        random.shuffle(covid_fal_content[k]) 
+    else: # mode == 'vaccine'
+        vaccine = pd.read_excel(vaccine_file_dir)
+        for claim_type, text, fallacy in zip(vaccine['Type of Claim'], vaccine.Claim, vaccine.Fallacy):
+            if not pd.isna(fallacy):
+                fallacy = fallacy.replace('ΝΟΝΕ','NONE')
+                if ';' not in fallacy: fal_content[fallacy.strip()].append((claim_type, text))
+        for k, v in fal_content.items():
+            random.seed(seed)
+            random.shuffle(fal_content[k])
 
-    vaccine = pd.read_excel(vaccine_file_dir)
-    vaccine_fal_content = defaultdict(list)
-    for claim_type, text, fallacy in zip(vaccine['Type of Claim'], vaccine.Claim, vaccine.Fallacy):
-        if not pd.isna(fallacy):
-            fallacy = fallacy.replace('ΝΟΝΕ','NONE')
-            if ';' not in fallacy: vaccine_fal_content[fallacy.strip()].append((claim_type, text))
+    return fal_content
+    
 
-    for k, v in vaccine_fal_content.items():
-        random.seed(seed)
-        random.shuffle(vaccine_fal_content[k])
-
+def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
+    covid_fal_content = read_and_preprocess(covid_file_dir, seed=seed, mode='covid')
     covid_train, covid_dev, covid_test = train_dev_test_split(
         covid_fal_content, 
         min_test_size=1,
@@ -96,6 +102,8 @@ def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
             'Post hoc': 'Post Hoc', 'False cause': 'False Cause', 'False Authority': 'False Authority'
         }
     )
+
+    vaccine_fal_content = read_and_preprocess(vaccine_file_dir, seed=seed, mode='vaccine')
     vaccine_train, vaccine_dev, vaccine_test = train_dev_test_split(
         vaccine_fal_content, 
         min_test_size=1,

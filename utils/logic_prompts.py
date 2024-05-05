@@ -69,6 +69,7 @@ def prompts_logic(
 
     return prompt_data
 
+
 def newlabel(label):
     label = label.title().replace('Of', 'of')
     
@@ -81,8 +82,8 @@ def newlabel(label):
         
     return label
 
-def main(file_dir, export_dir, seed=42):
-    
+
+def read_preprocess_split(file_dir, seed=42):
     # read and preprocess file
     file_dir = file_dir[:-1] if file_dir[-1] == '/' else file_dir
     logic_train = pd.read_csv(f'{file_dir}/edu_train.csv')
@@ -101,6 +102,12 @@ def main(file_dir, export_dir, seed=42):
     for i, (text, label) in enumerate(zip(logic_test.source_article, logic_test.updated_label)):
         if not pd.isna(label) and label != 'miscellaneous':
             logic_test_dict[newlabel(label)].append(text.replace('\n', ' '))
+
+    return logic_train_dict, logic_dev_dict, logic_test_dict
+
+
+def main(file_dir, export_dir, seed=42):
+    logic_train_dict, logic_dev_dict, logic_test_dict = read_preprocess_split(file_dir, seed=seed)
     
     logic_train_prompts = prompts_logic(logic_train_dict)
     logic_dev_prompts = prompts_logic(logic_dev_dict)
@@ -117,7 +124,6 @@ def main(file_dir, export_dir, seed=42):
         test_file_name='logic_test'
     )
     
-
 
 if __name__ == '__main__':
     
