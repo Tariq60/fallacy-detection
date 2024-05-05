@@ -1,58 +1,7 @@
+import os
 import sys
 import json
 import argotario_prompts, climate_prompts, covid_prompts, logic_prompts, propaganda_prompts, split_and_export_dataset
-
-def _parse_line(line, dataset, mode, fallacy):
-    if dataset == 'argotario':
-        if mode == 'single':
-            json_line = {'text': '{} {}'.format(line[0], line[1]), 'label': fallacy}
-        else: # mode == 'double'
-            json_line = {'text1': line[0], 'text2': line[1], 'label': fallacy}
-    
-    elif dataset == 'propaganda':
-        if mode == 'single':
-            json_line = {'text': line[2], 'label': fallacy} # sentence is in line[2]
-        elif mode == 'single_frag':
-            json_line = {'text': line[3], 'label': fallacy} # fargment is in line[3]
-        else: # mode == 'double'
-            json_line = {'text1': line[2], 'text2': line[3], 'label': fallacy} # fragment is in line[3]
-            
-    
-    elif dataset == 'climate':
-        if mode == 'single':
-            json_line = {'text': line[0], 'label': fallacy}
-        else: # mode == 'double'
-            json_line = {'text1': line[0], 'text2': line[1], 'label': fallacy}
-        
-    elif dataset == 'covid':
-        if mode == 'single':
-            json_line = {'text': line[1], 'label': fallacy}
-        else: # mode == 'double'
-            json_line = {'text1': line[1], 'text2': '', 'label': fallacy}
-            
-    elif dataset == 'logic':
-        if mode == 'single':
-            json_line = {'text': line, 'label': fallacy}
-        else: # mode == 'double'
-            json_line = {'text1': line, 'text2': '', 'label': fallacy}
-    
-    return json_line
-        
-        
-def create_files(data_dict, dataset, filename, mode='single', exclude_fal=['No Fallacy']):
-    '''dataset must be in: argo, propaganda, climate, covid, logic.
-        mode must be in: single/single_frag (one text input to bert) or double (two text inputs to bert)'''
-    
-    json_list = []
-    for fallacy in data_dict.keys():
-        if fallacy not in exclude_fal:
-            for line in data_dict[fallacy]:
-                json_line = _parse_line(line, dataset, mode, fallacy)
-                json_list.append(json_line)
-    
-    with open('{}.json'.format(filename), 'w') as f:
-        for line in json_list:
-            f.write('{}\n'.format(json.dumps(line)))
 
 def read_preprocess_split(file_dir, dataset):
     if dataset == 'argotario':
@@ -95,12 +44,65 @@ def read_preprocess_split(file_dir, dataset):
     
     return train, dev, test
 
+
+def _parse_line(line, dataset, mode, fallacy):
+    if dataset == 'argotario':
+        if mode == 'single':
+            json_line = {'text': '{} {}'.format(line[0], line[1]), 'label': fallacy}
+        else: # mode == 'double'
+            json_line = {'text1': line[0], 'text2': line[1], 'label': fallacy}
+    
+    elif dataset == 'propaganda':
+        if mode == 'single':
+            json_line = {'text': line[2], 'label': fallacy} # sentence is in line[2]
+        elif mode == 'single_frag':
+            json_line = {'text': line[3], 'label': fallacy} # fargment is in line[3]
+        else: # mode == 'double'
+            json_line = {'text1': line[2], 'text2': line[3], 'label': fallacy} # fragment is in line[3]
+            
+    
+    elif dataset == 'climate':
+        if mode == 'single':
+            json_line = {'text': line[0], 'label': fallacy}
+        else: # mode == 'double'
+            json_line = {'text1': line[0], 'text2': line[1], 'label': fallacy}
+        
+    elif dataset == 'covid':
+        if mode == 'single':
+            json_line = {'text': line[1], 'label': fallacy}
+        else: # mode == 'double'
+            json_line = {'text1': line[1], 'text2': '', 'label': fallacy}
+            
+    elif dataset == 'logic':
+        if mode == 'single':
+            json_line = {'text': line, 'label': fallacy}
+        else: # mode == 'double'
+            json_line = {'text1': line, 'text2': '', 'label': fallacy}
+    
+    return json_line
+        
+        
+def create_files(data_dict, export_dir, dataset, filename, mode='single', exclude_fal=['No Fallacy']):
+    '''dataset must be in: argo, propaganda, climate, covid, logic.
+        mode must be in: single/single_frag (one text input to bert) or double (two text inputs to bert)'''
+    
+    json_list = []
+    for fallacy in data_dict.keys():
+        if fallacy not in exclude_fal:
+            for line in data_dict[fallacy]:
+                json_line = _parse_line(line, dataset, mode, fallacy)
+                json_list.append(json_line)
+    with open(os.path.join(export_dir, f'{filename}.json'), 'w') as f:
+        for line in json_list:
+            f.write('{}\n'.format(json.dumps(line)))
+
+
 if __name__ == '__main__':
     
     '''run like: python bert_files.py file_dir export_dir dataset'''
-    # file_dir = '../data/climate_change/all fallacies annotated_final_golden_climate_change.xlsx'
+    # file_dir = '/data_files/climate/all fallacies annotated_final_golden_climate_change.xlsx'
     # export_dir = './'
-    # dataset = propaganda
+    # dataset = climate
     
     file_dir = sys.argv[1]
     export_dir = sys.argv[2]
@@ -109,6 +111,6 @@ if __name__ == '__main__':
     train, dev, test = read_preprocess_split(file_dir, dataset)
 
     mode = sys.argv[4] if len(sys.argv) > 4 else 'single'
-    create_files(train, export_dir, dataset, 'train', mode)
-    create_files(dev, export_dir, dataset, 'dev', mode)
-    create_files(test, export_dir, dataset, 'test', mode)
+    create_files(train, export_dir, dataset, dataset+'_train', mode)
+    create_files(dev, export_dir, dataset, dataset+'_dev', mode)
+    create_files(test, export_dir, dataset, dataset+'_test', mode)

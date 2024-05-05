@@ -137,9 +137,9 @@ def main(covid_file_dir, vaccine_file_dir, export_dir, seed=42):
 if __name__ == '__main__':
     
     '''run like: python covid_prompts.py covid_file_dir vaccine_file_dir export_dir'''
-    # covid_file_dir = '../data_files/Collected and annotated data_ACL.xlsx'
-    # vaccine_file_dir = '../data_files/Collected data Vaccination_Updated_110321 (2).xlsx'
-    # export_dir = '../../2023MBZUAI_Fallacy/data/'
+    # covid_file_dir = '/data_files/covid/Collected and annotated data_ACL.xlsx'
+    # vaccine_file_dir = '/data_files/covid/Collected data Vaccination_Updated_110321 (2).xlsx'
+    # export_dir = './'
 
     covid_file_dir = sys.argv[1]
     vaccine_file_dir = sys.argv[2]

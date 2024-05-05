@@ -138,8 +138,8 @@ def main(file_dir, export_dir, seed=42):
 if __name__ == '__main__':
     
     '''run like: python climate_prompts.py file_dir export_dir'''
-    # file_dir = '../data/climate_change/all fallacies annotated_final_golden_climate_change.xlsx'
-    # export_dir = '../../2023MBZUAI_Fallacy/data/'
+    # file_dir = '/data_files/climate_change/all fallacies annotated_final_golden_climate_change.xlsx'
+    # export_dir = './'
 
     file_dir = sys.argv[1]
     export_dir = sys.argv[2]

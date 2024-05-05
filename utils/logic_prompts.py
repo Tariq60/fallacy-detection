@@ -128,8 +128,8 @@ def main(file_dir, export_dir, seed=42):
 if __name__ == '__main__':
     
     '''run like: python logic_prompts.py file_dir export_dir'''
-    # file_dir = '../data_files/logical_fallacy_paper/'
-    # export_dir = '../../2023MBZUAI_Fallacy/data/'
+    # file_dir = '/data_files/logical_fallacy_paper/'
+    # export_dir = './'
 
     file_dir = sys.argv[1]
     export_dir = sys.argv[2]

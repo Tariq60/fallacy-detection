@@ -43,7 +43,6 @@ def prompts_propaganda(
     # ('''Given the following sentence and fallacy, find the fragment of the sentence that has this fallacy type.\nSentence: {sentence}\nFallacy: {fallacy}''', 'Fragment: {fragment}')
     prompts_targets = [
         ('''Given the sentence and fragment below, which of the following fallacies occurs in the fragment: {fallacies}, or {last_fallacy}?\nSentence: {sentence}\nFragment: {fragment}''', '{fallacy}'),
-        ('''Given the sentence, fragment and context below, which of the following fallacies occurs in the fragment: {fallacies}, or {last_fallacy}?\nSentence: {sentence}\nFragment: {fragment}\nContext: {context}''', '{fallacy}'),
         ('''Given the following sentence, fragment and definitions, determine which of the fallacies defined below occurs in the fragment.\nDefinitions:\n{definitions}\n\nSentence: {sentence}\nFragment: {fragment}''', '{fallacy}'),
         ('Which fallacy does the following sentence have: "{sentence}"?\n{fallacies}', '{fallacy}')
     ]
@@ -140,8 +139,8 @@ def main(processed_files_dir, export_dir, seed=42):
 if __name__ == '__main__':
     
     '''run like: python propaganda_prompts.py file_dir export_dir'''
-    # file_dir = '../Fallacy_Annotations/Propaganda/data/articles_with_propaganda_types_fragments_short'
-    # export_dir = '../../2023MBZUAI_Fallacy/data/'
+    # file_dir = '/data_files/propaganda/processed/articles/'
+    # export_dir = './'
 
     file_dir = sys.argv[1]
     export_dir = sys.argv[2]
